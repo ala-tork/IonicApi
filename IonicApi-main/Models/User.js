@@ -10,9 +10,7 @@ const User=mongoose.model('User',{
     Email:{
         type:String
     },
-    Image:{
-        type:String
-    },
+    
     Password:{
         type:String
     }

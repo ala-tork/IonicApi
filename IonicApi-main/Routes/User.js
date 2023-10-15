@@ -2,59 +2,50 @@ const express = require('express');
 const router = express.Router();
 const user = require('../Models/User');
 const bcrypt = require('bcrypt');
-const jwt =  require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
+const verifyToken = require('../Config/TokenConfig');
 require('dotenv').config();
 
 
-// Define the verifyToken middleware
-const verifyToken = (req, res, next) => {
-    const token = req.header('Authorization');
-    if (!token) return res.status(401).send('Access denied. No token provided.');
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-        req.user = decoded;
-        next(); // Continue to the next middleware or route handler
-    } catch (ex) {
-        res.status(400).send('Invalid token.');
-    }
-};
 
-router.post('/register',async(req,res)=>{
+router.post('/register', async (req, res) => {
     try {
         usr = new user(req.body)
-        salt= bcrypt.genSaltSync(10);
-        bcryptPassword = await bcrypt.hashSync(req.body.Password,salt);
+        salt = bcrypt.genSaltSync(10);
+        bcryptPassword = await bcrypt.hashSync(req.body.Password, salt);
         usr.Password = bcryptPassword;
         result = await usr.save();
-        return res.status(200).send(result);     
+        return res.status(200).send(result);
     } catch (error) {
         return res.status(400).send(error);
     }
 })
 
-router.post('/login',async(req,res)=>{
+router.post('/login', async (req, res) => {
 
-    let jwtSecretKey = process.env.JWT_SECRET_KEY; 
-    data=req.body;
-    usr=await user.findOne({Email:data.Email})
-    
-    if(!usr){
+    let jwtSecretKey = process.env.JWT_SECRET_KEY;
+    data = req.body;
+    console.log('us' , data) 
+    var usr = await user.findOne({ Email: data.Email })
+    console.log('us' , usr)
+
+    if (!usr) {
         res.status(404).send("email or password invalid");
-    }else{
-        validPass= bcrypt.compareSync(data.Password, usr.Password)
-        if(!validPass){
+    } else {
+        validPass = bcrypt.compareSync(data.Password, usr.Password)
+        if (!validPass) {
             res.status(401).send('email or password invalid');
-        }else{
-            payload={
-                _id:usr._id,
-                Email:usr.Email,
-                First_name:usr.First_name,
-                Last_name:usr.Last_name,
-                time: Date(), 
+        } else {
+            payload = {
+                _id: usr._id,
+                Email: usr.Email,
+                First_name: usr.First_name,
+                Last_name: usr.Last_name,
+                time: Date(),
             }
-            token=jwt.sign(payload,jwtSecretKey);
-            res.status(200).send({mytoken:token});
+            token = jwt.sign(payload, "123456");
+            res.status(200).send({ mytoken: token });
         }
     }
 })
@@ -62,7 +53,7 @@ router.post('/login',async(req,res)=>{
 
 router.post('/GetDataFromToken', async (req, res) => {
 
-    let jwtSecretKey = process.env.JWT_SECRET_KEY;  
+    let jwtSecretKey = process.env.JWT_SECRET_KEY;
     const token = req.body.token;
 
     jwt.verify(token, jwtSecretKey, (err, decoded) => {
@@ -111,7 +102,7 @@ router.delete('/deleteProfile/:id', verifyToken, async (req, res) => {
 router.get('/getUser/:id', verifyToken, async (req, res) => {
     try {
         const userId = req.params.id;
-        
+
         const foundUser = await user.findById(userId);
 
         if (!foundUser) {
