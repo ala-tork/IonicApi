@@ -1,6 +1,6 @@
 const mongoose = require ('mongoose');
 try {
-    mongoose.connect('mongodb://127.0.0.1:27017/ionicDb')
+    mongoose.connect('mongodb+srv://ahmedayadi:80syyFgv5dZh836s@ionic-webservice.hevrnwa.mongodb.net/')
     .then(() => console.log('Db Connected!'));
 } catch (error) {
     console.log(error);
