@@ -73,7 +73,7 @@ router.post('/GetDataFromToken', async (req, res) => {
             res.status(401).send('Token verification failed');
         } else {
             console.log('Decoded token:', decoded);
-            res.status(200).json({ decodedToken: decoded._id });
+            res.status(200).json(decoded._id);
         }
     });
 });
