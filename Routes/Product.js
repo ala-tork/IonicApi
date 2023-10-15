@@ -6,6 +6,7 @@ const _ = require('lodash');
 
 const jwt = require('jsonwebtoken');
 
+
 router.post('/AddProducts',verifyToken,async (req,res)=>{
         try{
             const data=req.body;
@@ -27,19 +28,23 @@ router.get('/AllProduct',verifyToken,async (req,res)=>{
         return res.status(400).send("Internal server error");
     }
 })
-
-router.get('/:id',verifyToken,async(req,res)=>{
+router.get('/:id', verifyToken, async (req, res) => {
     try {
-        prod_Id=req.params.id;
-        data = await prod.findById(id);
-        if(data != null)
-        return res.status(200).send(data);
-        else return res.status(404).send("product not found");
-    } catch (error) {
-        return res.status(500).send(error);
-    }
+        const prod_Id = req.params.id;
+        const data = await prod.findById(prod_Id);
 
-})
+        if (data !== null) {
+            return res.status(200).send(data);
+        } else {
+            return res.status(404).send("Product not found");
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Internal Server Error");
+    }
+});
+
+
 
 router.delete('/DeleteProduct/:id', verifyToken, async (req, res) => {
     try {
@@ -77,6 +82,7 @@ router.put('/UpdateProduct/:id', verifyToken, async (req, res) => {
     }
 });
 
+
 router.get('/ProductsByCategory/:category', verifyToken, async (req, res) => {
     try {
         const category = req.params.category;
@@ -92,6 +98,7 @@ router.get('/ProductsByCategory/:category', verifyToken, async (req, res) => {
         return res.status(500).send(error);
     }
 });
+
 
 router.get('/ProductsByUser/:userId', verifyToken, async (req, res) => {
     try {
@@ -123,8 +130,6 @@ router.get('/ProductsByUser/:userId', verifyToken, async (req, res) => {
 //         return res.status(500).send("Internal server error");
 //     }
 // });
-
-
 
 
 

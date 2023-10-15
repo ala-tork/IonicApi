@@ -3,6 +3,7 @@ const router = express.Router();
 const user = require('../Models/User');
 const bcrypt = require('bcrypt');
 const jwt =  require('jsonwebtoken');
+const verifyToken = require('../Config/TokenConfig');
 require('dotenv').config();
 
 router.post('/register',async(req,res)=>{
@@ -45,6 +46,22 @@ router.post('/login',async(req,res)=>{
 })
 
 
+// router.post('/GetDataFromToken', async (req, res) => {
+
+//     let jwtSecretKey = process.env.JWT_SECRET_KEY;  
+//     const token = req.body.token;
+
+//     jwt.verify(token, jwtSecretKey, (err, decoded) => {
+//         if (err) {
+//             console.error('Token verification failed:', err);
+//             res.status(401).send('Token verification failed');
+//         } else {
+//             console.log('Decoded token:', decoded);
+//             res.status(200).json({ decodedToken: decoded });
+//         }
+//     });
+// });
+
 router.post('/GetDataFromToken', async (req, res) => {
 
     let jwtSecretKey = process.env.JWT_SECRET_KEY;  
@@ -56,7 +73,7 @@ router.post('/GetDataFromToken', async (req, res) => {
             res.status(401).send('Token verification failed');
         } else {
             console.log('Decoded token:', decoded);
-            res.status(200).json({ decodedToken: decoded });
+            res.status(200).json({ decodedToken: decoded._id });
         }
     });
 });
