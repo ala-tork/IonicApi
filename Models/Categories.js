@@ -1,7 +1,7 @@
 module.exports = {
     PRODUCT_CATEGORIES: [
+        "PC", 
         "Phones", 
-        "Clothing", 
         "Cars", 
         "Books"
     ],
